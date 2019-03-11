@@ -30,6 +30,8 @@ namespace LogAppenderWeb
             log4net.GlobalContext.Properties["AssemblyVersion"] = "18.09.02.1";
             log4net.GlobalContext.Properties["Uziv"] = "???";
 
+            
+
             Helper.log.Info("Start application...");
         }
 
@@ -37,12 +39,18 @@ namespace LogAppenderWeb
         {
             // definice proměnný pro logování aktuálního requestu
             log4net.ThreadContext.Properties["StartRequest"] = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-            log4net.ThreadContext.Properties["URL"] = HttpContext.Current.Request.Url.OriginalString;
-            var rn = $"{m_rnd.Next(0,9999)}-{DateTime.Now.Millisecond}";            
+            log4net.ThreadContext.Properties["URL"] = HttpContext.Current.Request.Url.OriginalString;            
 
             if (log4net.ThreadContext.Stacks["NDC"].Count == 0)
             {
+                var rn = $"{m_rnd.Next(0, 9999)}-{DateTime.Now.Millisecond}";
                 log4net.ThreadContext.Stacks["NDC"].Push(rn);
+            }
+            else
+            {
+                // rozlišení kontextu v rámci jednoho threadu, ale vícenásobného requestu.
+                // pro více requestů od stejného klienta může dojít k použití dříve vytvořeného procesu (thredu), pomocí této funkčnosti pouze rozlišíme "úroveň"
+                log4net.ThreadContext.Stacks["NDC"].Push("#");
             }
 
             Helper.log.Debug("Global.asax: Application_BeginRequest...");
