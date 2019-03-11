@@ -2,7 +2,7 @@
 Prototyp s ukázkou použití paramtrů pro logování v knihovně **log4net**.
 
 ## Ukázková funkčnost
-* konfigurace oddělená do samostatného souboruy
+* konfigurace oddělená do samostatného souboru
 * použítí vlastního appenderu a jeho konfigurace
 * rozdělení logování do samostatných souborů podle úrovně logování - loglevel
 * použití komplexnějších "pattern layoutů"
