@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -35,6 +37,14 @@ namespace LogAppenderWeb
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
+            if (HttpContext.Current.Request.Cookies["lang"] != null)
+            {
+                var lng = HttpContext.Current.Request.Cookies["lang"].Value;
+                var ci = new CultureInfo(lng);
+                Thread.CurrentThread.CurrentCulture = ci;
+                Thread.CurrentThread.CurrentUICulture = ci;
+            }
+
             // definice proměnný pro logování aktuálního requestu
             log4net.ThreadContext.Properties["StartRequest"] = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
             log4net.ThreadContext.Properties["URL"] = HttpContext.Current.Request.Url.OriginalString;
@@ -46,6 +56,21 @@ namespace LogAppenderWeb
             }
 
             Helper.log.Debug("Global.asax: Application_BeginRequest...");
+        }
+
+        protected void Application_AuthenticateReques()
+        {
+            Helper.log.Debug("Global.asax: Application_AuthenticateReques...");
+        }
+
+        protected void Application_AuthorizeRequest()
+        {
+            Helper.log.Debug("Global.asax: Application_AuthorizeRequest...");
+        }
+
+        protected void Application_AcquireRequestState()
+        {
+            Helper.log.Debug("Global.asax: Application_AcquireRequestState...");
         }
 
         protected void Application_EndRequest()
