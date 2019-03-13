@@ -13,6 +13,7 @@ namespace LogAppenderConsole
 
         static void Main(string[] args)
         {
+            // tato informace je poněkud nespolehlivá, přesnější způsoby jsou níže...
             var osInfo = System.Environment.OSVersion.VersionString;
             // definice základních globálních proměnných pro logování
             log4net.GlobalContext.Properties["OsInfo"] = osInfo;
@@ -71,6 +72,9 @@ namespace LogAppenderConsole
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Toto jednoduché zjištění z registrů není vždy spolehlivé
+        /// </summary>
         static void CheckVersionOsByRegistry()
         {
             var subKey = @"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion";
@@ -81,6 +85,11 @@ namespace LogAppenderConsole
             Console.WriteLine("OS version by registry: " + name);
         }
 
+        /// <summary>
+        /// Toto vypadá jako nejjistější metoda.
+        /// Tento způsob může být výkonově problematický, takže nevolat opakovaně, ale pouze jednou zjistit až když je potřeba
+        /// a zjištěnou hodnotu si uložit pro příští použití
+        /// </summary>
         static void CheckVersionOsByManagement()
         {
             var result = string.Empty;
