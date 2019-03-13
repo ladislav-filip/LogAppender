@@ -4,12 +4,13 @@ using log4net.Core;
 
 namespace LogAppenderWeb.Infrastructure
 {
+    /// <summary>
+    /// Pouze pro otestování funkčnosti vlastního SMTP appenderu.
+    /// </summary>
     public class MySmtpAppender : SmtpAppender
     {
         protected override void Append(LoggingEvent loggingEvent)
         {            
-            //log4net.GlobalContext.Properties["AssemblyVersion"] = "3.00";
-            //log4net.ThreadContext.Properties["Uziv"] = HttpContext.Current.User.Identity.Name;
             base.Append(loggingEvent);
         }
     }
