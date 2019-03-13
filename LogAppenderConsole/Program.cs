@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Management;
 using System.Threading.Tasks;
 
 namespace LogAppenderConsole
@@ -12,6 +13,18 @@ namespace LogAppenderConsole
 
         static void Main(string[] args)
         {
+            var osInfo = System.Environment.OSVersion.VersionString;
+            // definice základních globálních proměnných pro logování
+            log4net.GlobalContext.Properties["OsInfo"] = osInfo;
+
+            Console.WriteLine("OS version by Environment: " + osInfo);
+            CheckVersionOsByRegistry();
+            CheckVersionOsByManagement();
+            CheckVersionOsByWin32();
+
+            Console.WriteLine();
+            Console.WriteLine();
+
             // NDC = "nested diagnostic context"
             using (log4net.NDC.Push(Guid.NewGuid().ToString()))
             {
@@ -34,6 +47,35 @@ namespace LogAppenderConsole
             Console.WriteLine("Hit enter");
             Console.ReadLine();
         }
+
+        static void CheckVersionOsByRegistry()
+        {
+            var subKey = @"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion";
+            var key = Microsoft.Win32.Registry.LocalMachine;
+            var skey = key.OpenSubKey(subKey);
+            var name = skey.GetValue("ProductName").ToString();
+
+            Console.WriteLine("OS version by registry: " + name);
+        }
+
+        static void CheckVersionOsByManagement()
+        {
+            var result = string.Empty;
+            var searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
+            foreach (var os in searcher.Get())
+            {
+                result = os["Caption"].ToString();
+                break;
+            }
+            Console.WriteLine("OS version by management: " + result);
+        }
+
+        static void CheckVersionOsByWin32()
+        {
+            var result = $"Windows {ComputerInfo.WinMajorVersion}.{ComputerInfo.WinMinorVersion}";
+            Console.WriteLine("OS version by Win32: " + result);
+        }
+
 
         static void LogMy(string msg)
         {
