@@ -18,9 +18,32 @@ namespace LogAppenderConsole
             log4net.GlobalContext.Properties["OsInfo"] = osInfo;
 
             Console.WriteLine("OS version by Environment: " + osInfo);
-            CheckVersionOsByRegistry();
-            CheckVersionOsByManagement();
-            CheckVersionOsByWin32();
+            try
+            {
+                CheckVersionOsByRegistry();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            try
+            {
+                CheckVersionOsByManagement();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            try
+            {
+                CheckVersionOsByWin32();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }            
 
             Console.WriteLine();
             Console.WriteLine();
